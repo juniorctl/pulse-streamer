@@ -40,4 +40,3 @@ RUN go get github.com/pion/example-webrtc-applications/gstreamer-send
 
 RUN useradd -ms /bin/bash me
 USER me
-
