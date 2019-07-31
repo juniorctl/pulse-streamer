@@ -1,6 +1,6 @@
 # supercollider example
-* docker build -f Dockerfile.supercollider -t pulse-streamer-sc .
-* docker run --privileged --ulimit nice=1:1 --ulimit rtprio=99:99 --ulimit memlock=800000000:800000000 --volume=/dev/shm:/dev/shm:rw --user=1000 -it awestruck /bin/bash
+* `docker build -f Dockerfile.supercollider -t pulse-streamer-sc .`
+* `docker run --privileged --ulimit nice=1:1 --ulimit rtprio=99:99 --ulimit memlock=800000000:800000000 --volume=/dev/shm:/dev/shm:rw --user=1000 -it pulse-streamer-sc /bin/bash`
 
 # TODO
 Cannot get JACK to start with realtime scheduling. I think we need this to get SC audio to be consumed by Pulse/Jack/GStreamer. Many attempts from different angles without success.
