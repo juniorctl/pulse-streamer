@@ -1,6 +1,6 @@
 # supercollider example
 * `docker build -f Dockerfile.sc -t pulse-streamer-sc .`
-* `docker run --privileged --ulimit nice=1:1 --ulimit rtprio=99:99 --ulimit memlock=800000000:800000000 --volume=/dev/shm:/dev/shm:rw --user=1000 -it awestruck /bin/bash`
+* `docker run --privileged --ulimit nice=1:1 --ulimit rtprio=99:99 --ulimit memlock=800000000:800000000 --volume=/dev/shm:/dev/shm:rw --user=1000 -it pulse-streamer-sc /bin/bash`
 * [you are now in the container]
 
 # TODO
