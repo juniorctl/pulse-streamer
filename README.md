@@ -1,11 +1,11 @@
 # pulse-streamer
-* docker build -f Dockerfile -t pulse-streamer .
-* docker run -it pulse-streamer /bin/bash
-* pulseaudio --start
+* `docker build -f Dockerfile -t pulse-streamer .`
+* `docker run -it pulse-streamer /bin/bash`
+* `pulseaudio --start`
 
 see: https://github.com/pion/example-webrtc-applications/tree/master/gstreamer-send#open-gstreamer-send-example-page
 
-* echo $BROWSER_SDP | gstreamer-send -audio-src "audiotestsrc ! audioconvert ! audioresample"
+* `echo $BROWSER_SDP | gstreamer-send -audio-src "audiotestsrc ! audioconvert ! audioresample"`
 * note: audiotestsrc is a gstreamer utility that generates a sine wave for testing audio
 * paste the response in the jsfiddle, click "Start Session" to hear the test tone
 
