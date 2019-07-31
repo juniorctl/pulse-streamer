@@ -22,7 +22,8 @@ Cannot use real-time scheduling (RR/10)(1: Operation not permitted)
 AcquireSelfRealTime error
 ```
 
-Original attempt was to run sclang to play a synth and stream it with gstreamer/pion. SC booted but complained about not being able to set realtime scheduling priority:
+Original attempt was to run sclang to play a synth and stream it with pulse/jack/gstreamer/pion. SC booted but complained about not being able to set realtime scheduling priority:
+
 ```
 po@5dd7cdee6d7a:/$ pulseaudio --start & jackd -r -d dummy -r 44100 & xvfb-run -a sclang /usr/src/tst.sc & echo $BROWSER_SDP | gstreamer-send -audio-src "pulsesrc ! audioconvert ! audioresample"
 [1] 7
@@ -95,5 +96,5 @@ The repeated `Couldn't set realtime scheduling priority 1: Operation not permitt
 
 Tried:
 * setting rtprio, memlock and nice in limits.conf to high priorities in various directories
-* These did not seem to be respected (was getting `Cannot lock down 82280346 byte memory area (Cannot allocate memory)` errors), so ran Docker with priorities and passed ulimits into `docker run...`
-* Noticed that `CONFIG_RT_GROUP_SCHED` is enabled within the container: `zcat /proc/config.gz | grep CONFIG_RT_GROUP_SCHED`. Followed instructions here without success: http://jackaudio.org/faq/linux_group_sched.html. See more details here: https://github.com/jackaudio/jackaudio.github.com/wiki/Cgroups (no success modifying cgconfig.conf or cgrules.conf)
+* These did not seem to be respected (was getting `Cannot lock down 82280346 byte memory area (Cannot allocate memory)` errors), so ran Docker with priorities and passed ulimits into `docker run...`. The only flag that allowed the lock down was `--user=1000`
+* Noticed that `CONFIG_RT_GROUP_SCHED` is enabled within the container: `zcat /proc/config.gz | grep CONFIG_RT_GROUP_SCHED`. The post below states that this "has the potential to wreak havoc on applications that want to use realtime scheduling". Followed instructions here without success: http://jackaudio.org/faq/linux_group_sched.html. See more details here: https://github.com/jackaudio/jackaudio.github.com/wiki/Cgroups (no success modifying cgconfig.conf or cgrules.conf)
