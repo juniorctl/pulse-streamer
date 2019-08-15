@@ -38,5 +38,6 @@ ENV PKG_CONFIG_PATH=/usr/local/opt/libffi/lib/pkgconfig
 RUN go mod init github.com/pion/example-webrtc-applications/gstreamer-send
 RUN go get github.com/pion/example-webrtc-applications/gstreamer-send
 
+RUN groupadd audio
 RUN useradd -ms /bin/bash me
 USER me

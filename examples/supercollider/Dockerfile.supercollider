@@ -1,10 +1,17 @@
 FROM debian:latest
+# FROM ubuntu:16.04
+# 1. Ubuntu 16.04
+# 2. Debian Jessie
 
+# ENV UBUNTU_FRONTEND noninteractive
 ENV DEBIAN_FRONTEND noninteractive
+
 # ENV DEBIAN_PRIORITY critical
 # ENV DEBCONF_NOWARNINGS yes
+#
+# install apt-utils?
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get install -y \
     libgstreamer1.0-0 \
     libgstreamer-plugins-base1.0-dev \
     gstreamer1.0-plugins-base \
@@ -19,8 +26,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gstreamer1.0-gl \
     gstreamer1.0-gtk3 \
     gstreamer1.0-qt5 \
-    gstreamer1.0-pulseaudio \
-    pulseaudio \
     git \
     apt-transport-https \
     ca-certificates \
@@ -29,11 +34,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     xvfb \
     xauth \
-    libjack-jackd2-dev \
+    # libjack-jackd2-dev \
     supercollider \
-    qjackctl \
-    libcgroup-dev \
-    pulseaudio-module-jack
+    libcgroup-dev
+    # qjackctl \
 
 # GO STUFF
 RUN wget https://dl.google.com/go/go1.12.6.linux-amd64.tar.gz
@@ -55,14 +59,12 @@ RUN go get github.com/pion/example-webrtc-applications/gstreamer-send
 COPY asoundrc /root/.asoundrc
 
 # No success getting JACK to run in realtime with any of these
-# COPY limits.conf /etc/security/limits.conf
-# COPY limits.conf /etc/limits.conf
-# COPY 99-realtime.conf /etc/security/limits.d/99-realtime.conf
+COPY limits.conf /etc/security/limits.conf
+COPY limits.conf /etc/limits.conf
+COPY 99-realtime.conf /etc/security/limits.d/99-realtime.conf
 # COPY system.conf /etc/systemd/system.conf
 
 COPY limits.conf /etc/security/limits.d/audio.conf
-# COPY cgconfig.conf /etc/cgconfig.conf
-# COPY cgrules.conf /etc/cgrules.conf
 
 COPY startup.scd /root/.config/SuperCollider/startup.scd
 COPY tst.sc /usr/src/tst.sc
@@ -71,9 +73,8 @@ COPY tst.sc /usr/src/tst.sc
 RUN dpkg-reconfigure -p high jackd
 
 RUN useradd -ms /bin/bash po
-RUN usermod -a -G audio po
-
-RUN chown -R po:po /usr/src
+RUN usermod -a -G audio root
+RUN chown -R root:root /usr/src
 RUN chmod 755 /usr/src/
 
-USER po
+USER root
