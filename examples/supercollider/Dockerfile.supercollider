@@ -1,15 +1,8 @@
 FROM debian:latest
-# FROM ubuntu:16.04
-# 1. Ubuntu 16.04
-# 2. Debian Jessie
 
-# ENV UBUNTU_FRONTEND noninteractive
 ENV DEBIAN_FRONTEND noninteractive
-
 # ENV DEBIAN_PRIORITY critical
 # ENV DEBCONF_NOWARNINGS yes
-#
-# install apt-utils?
 
 RUN apt-get update && apt-get install -y \
     libgstreamer1.0-0 \
@@ -34,9 +27,10 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     xvfb \
     xauth \
-    # libjack-jackd2-dev \
     supercollider \
     libcgroup-dev
+    # these seem to be unneeded/already installed
+    # libjack-jackd2-dev \
     # qjackctl \
 
 # GO STUFF
@@ -58,6 +52,9 @@ RUN go get github.com/pion/example-webrtc-applications/gstreamer-send
 # SC/AUDIO STUFF
 COPY asoundrc /root/.asoundrc
 
+COPY cgconfig.conf /etc/cgconfig.conf
+# COPY cgrules.conf /etc/cgrules.conf
+
 # No success getting JACK to run in realtime with any of these
 COPY limits.conf /etc/security/limits.conf
 COPY limits.conf /etc/limits.conf
@@ -73,8 +70,8 @@ COPY tst.sc /usr/src/tst.sc
 RUN dpkg-reconfigure -p high jackd
 
 RUN useradd -ms /bin/bash po
-RUN usermod -a -G audio root
-RUN chown -R root:root /usr/src
+RUN usermod -a -G audio po
+RUN chown -R po:po /usr/src
 RUN chmod 755 /usr/src/
 
-USER root
+USER po
