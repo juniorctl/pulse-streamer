@@ -63,8 +63,16 @@ COPY 99-realtime.conf /etc/security/limits.d/99-realtime.conf
 
 COPY limits.conf /etc/security/limits.d/audio.conf
 
+# cpu.rt_runtime_us
+# COPY cpu.rt_runtime_us /sys/fs/cgroup/cpu/cpu.rt_runtime_us
+
 COPY startup.scd /root/.config/SuperCollider/startup.scd
+COPY startup.scd ~/.config/SuperCollider/startup.scd
+
+COPY Procfile Procfile
+
 COPY tst.sc /usr/src/tst.sc
+COPY vocals.wav /usr/src/vocals.wav
 
 # this does not seem to be doing anything
 RUN dpkg-reconfigure -p high jackd
@@ -72,6 +80,13 @@ RUN dpkg-reconfigure -p high jackd
 RUN useradd -ms /bin/bash po
 RUN usermod -a -G audio po
 RUN chown -R po:po /usr/src
+RUN chown -R po:po ~/.config/
 RUN chmod 755 /usr/src/
+# RUN chown -R po:po /sys/fs/cgroup/cpu/
 
 USER po
+
+COPY startup.scd ~/.config/SuperCollider/startup.scd
+COPY startup.scd /home/po/.config/SuperCollider/startup.scd
+
+# TODO read this! https://github.com/moby/moby/pull/23430

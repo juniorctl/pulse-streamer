@@ -1,0 +1,2 @@
+jackd: jackd -r -d dummy -r 44100
+sclang: xvfb-run -a sclang /radio.sc

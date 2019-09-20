@@ -22,7 +22,7 @@ Cannot use real-time scheduling (RR/10)(1: Operation not permitted)
 AcquireSelfRealTime error
 ```
 
-Original attempt was to run sclang to play a synth and stream it with pulse/jack/gstreamer/pion. SC booted but complained about not being able to set realtime scheduling priority:
+Original attempt was to run sclang to play a synth and stream it with pulse/jack/gstreamer/pion. SC booted but complained about not being able to set realtime scheduling priority (this happens both with -r [non-realtime] and -R [realtime] passed to jackd):
 
 ```
 po@5dd7cdee6d7a:/$ pulseaudio --start & jackd -r -d dummy -r 44100 & xvfb-run -a sclang /usr/src/tst.sc & echo $BROWSER_SDP | gstreamer-send -audio-src "pulsesrc ! audioconvert ! audioresample"

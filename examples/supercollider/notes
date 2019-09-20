@@ -1,0 +1,7 @@
+docker run --cap-add=sys_nice --cpu-period 1000000 --cpu-rt-period=1000000 --ulimit rtprio=99 --privileged --ulimit rtprio=99:99 --ulimit memlock=800000000 --volume=/dev/shm:/dev/shm:rw -v /sys/fs/cgroup:/sys/fs/cgroup:rw --user=po -it j-sc-2 bash
+
+jackd -R -d dummy -r 44100 -p 9 & xvfb-run -a sclang /usr/src/tst.sc
+
+echo $BROWSER_SDP | gstreamer-send -audio-src "jackaudiosrc ! audioconvert ! audioresample"
+
+xvfb-run -a sclang /usr/src/tst.sc & echo $BROWSER_SDP | gstreamer-send -audio-src "jackaudiosrc connect=0 ! jackaudiosink connect=0 ! audioconvert ! audioresample"
