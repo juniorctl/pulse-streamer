@@ -23,6 +23,6 @@ These should both be audible through the JS fiddle once you copy the response to
 
 Repeat the above steps, replacing the echo with:
 
-* `echo $BROWSER_SDP | gstreamer-send -audio-src "jackaudiosrc connect=auto ! jackaudiosink connect=auto"`
+* `jackd -r -d dummy -r 44100 & xvfb-run -a sclang /usr/src/tst.sc & echo $BROWSER_SDP | gstreamer-send -audio-src "jackaudiosrc connect=auto ! jackaudiosink connect=auto"`
 
 No audio :(
