@@ -2,8 +2,8 @@
 
 First, to get some test audio streaming over the web with JACK, GStreamer and Pion from a docker container, check out this Pion WebRTC example [app](https://github.com/pion/example-webrtc-applications/tree/master/gstreamer-send#open-gstreamer-send-example-page)
 
-* Go to the jsfiddle example it references, [here](https://jsfiddle.net/z7ms3u5r/)
-* Copy the `Browser base64 Session Description` token in the text field, save this for a few steps below
+* Go to the jsfiddle example it references, [here](https://jsfiddle.net/z7ms3u5r/). This is where you'll hear the audio streaming from your docker container.
+* Copy the long token in the "Browser base64 Session Description" text area, save this for a few steps below
 
 Then, in your terminal within this cloned repo
 * `cd examples/supercollider`
@@ -12,7 +12,8 @@ Then, in your terminal within this cloned repo
 
 Now, to play a test tone in the container and stream to the jsfiddle, run the following in the container:
 
-* `echo $BROWSER_SDP | gstreamer-send -audio-src "audiotestsrc ! audioconvert ! audioresample"`
+* set the token you copied from the jsfiddle to a variable with `BROWSER_SDP=<token-you-copied>`
+* then start gstreamer/pion: `echo $BROWSER_SDP | gstreamer-send -audio-src "audiotestsrc ! audioconvert ! audioresample"`
 
 There's also an example audio file included in the Dockerfile.supercollider. To play it, run the following in the container (may need to reload the jsfiddle, recopy the token and set to BROWSER_SDP again if you tried the test tone above):
 
@@ -22,13 +23,16 @@ The test tone and the audio file should both be audible through the JS fiddle on
 
 #### Problem: cannot get SuperCollider to stream with JACK + GStreamer + Pion
 
-Assuming your docker image is built, open three separate terminal windows and run the `docker run...` command in each to open three bash sessions in the container:
+Assuming the docker image from above is built, open three separate terminal windows and run the `docker run...` command in each to open three bash sessions in the container:
+
 * `docker run --volume=/dev/shm:/dev/shm:rw --user=po -it j-sc-2 bash`
 
 In the first session, start JACK:
-* jackd -r -d dummy -r 44100 
+
+* `jackd -r -d dummy -r 44100`
 
 In the second one, after reloading the JS fiddle, copying the token and setting BROWSER_SDP=<token> in the container, start the gstreamer-send Pion program:
+
 * `echo $BROWSER_SDP | gstreamer-send -audio-src "jackaudiosrc ! audioconvert ! audioresample ! autoaudiosink"`
 
 Copy the token response for use later in the JSFiddle after you run SuperCollider in the steps below
@@ -71,10 +75,12 @@ Shared memory server interface initialized
 Hello World!
 ```
 
-Note the `JackDriver: connected  SuperCollider:out_1 to gstreamer-send-01:in_jackaudiosrc0_1` (not sure why the second port is not being connected to, but that's for later)
+SuperCollider is running the tst.sc file referenced in the Dockerfile (it prints "Hello World!" and plays some sound. Note the `JackDriver: connected  SuperCollider:out_1 to gstreamer-send-01:in_jackaudiosrc0_1`, which confirms SuperCollider could connect to this JACK port created by GStreamer (not sure why the second port is not being connected to, but that's for later).
 
 Now, go back to the JSFiddle and paste the response from the gstreamer-send command, then click "Start Sesssion".
 
-Nothing is audible...
+No audio can be heard...
 
-This must mean the gstreamer-send is missing something required to convert the JACK stream into something audible for the JSFiddle.
+Hypothesis: this must mean that:
+* the gstreamer-send is missing something required to convert the JACK stream into something audible for the JSFiddle and/or
+* the SC output needs to be hooked up to the JACK input port GStreamer created before JACK can then output it to GStreamer
