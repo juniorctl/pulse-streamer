@@ -1,6 +1,6 @@
 "SC_JACK_DEFAULT_OUTPUTS".setenv(
-    "system:playback_1",
-    "system:playback_2"
+    "gstreamer-send-01:in_jackaudiosrc0_1",
+    "gstreamer-send-01:in_jackaudiosrc0_2"
     );
 
 ServerQuit.add({

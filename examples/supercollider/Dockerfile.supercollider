@@ -28,7 +28,8 @@ RUN apt-get update && apt-get install -y \
     xvfb \
     xauth \
     supercollider \
-    libcgroup-dev
+    libcgroup-dev \
+    alsa-utils
     # these seem to be unneeded/already installed
     # libjack-jackd2-dev \
     # qjackctl \
@@ -50,7 +51,7 @@ RUN go mod init github.com/pion/example-webrtc-applications/gstreamer-send
 RUN go get github.com/pion/example-webrtc-applications/gstreamer-send
 
 # SC/AUDIO STUFF
-COPY asoundrc /root/.asoundrc
+# COPY asoundrc /root/.asoundrc
 
 COPY cgconfig.conf /etc/cgconfig.conf
 # COPY cgrules.conf /etc/cgrules.conf
